@@ -1,0 +1,81 @@
+html,body { height:100%; }
+
+.dtopbar {
+    background-color: rgb(39, 39, 39);
+}
+
+.dsidenav {
+    overflow-x: hidden;
+    background-color: rgb(28, 28, 28);
+    order: 2;
+    width: 100%;
+}
+
+.dsideitem, .dsideitem:hover {
+    color: white;
+    text-align: left;
+    font-size: 1em;
+    font-weight: normal;
+    line-height: 50px;
+    width: 100%;
+    border-radius: 0%;
+    box-shadow: unset;
+    border-bottom: 1px solid rgb(58, 58, 58);
+}
+
+.btn {
+    text-transform: unset !important;
+}
+
+.diconspacer {
+    width: 35px;
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+body {
+    background-color: rgb(18, 18, 18);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.dpagecontent {
+    width: 100%;
+    padding: 10px;
+}
+
+.dpagecontainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dsidenavbackgroundstick {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .dpagecontent {
+        width: auto;
+        max-width: 100%;
+        flex: 1;
+        overflow: hidden;
+    }
+    .dsidenav {
+        width: 260px;
+        order: 0;
+        flex-shrink: 0;
+        padding-bottom: 5px;
+    }
+    .dpagecontent {
+        padding-left: 20px;
+    }
+    .dsidenavbackgroundstick {
+        z-index: -100;
+        display: block;
+        width: 260px;
+        background-color: rgb(28, 28, 28);
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+    }
+}

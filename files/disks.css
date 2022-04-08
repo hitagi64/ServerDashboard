@@ -1,0 +1,104 @@
+.dpagesubcontainer {
+    margin: 6px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgb(28, 28, 28);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.dmenubtn {
+    color: white;
+    box-shadow: none;
+}
+
+.dmenubtn:hover {
+    color: white;
+}
+
+#darrayslist {
+    background-color: rgb(37, 37, 37);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.dgreenindicator {
+    color: rgb(92, 255, 42);
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dredindicator {
+    color: rgb(255, 83, 40);
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dorangeindicator {
+    color: rgb(255, 159, 34);
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dacntr {
+    text-align: center;
+}
+
+.daright {
+    text-align: right;
+}
+
+.darrayslist thead tr:first-child {
+    border-bottom: 1px solid rgb(71, 71, 71);
+    background-color: rgb(48, 48, 48);
+}
+
+.darrayslist th, .darrayslist td {
+    padding: 1rem 1.1rem;
+}
+
+#darrayslist {
+    width: 100%;
+}
+
+.darraydiskslist {
+    width: 100%;
+}
+
+/* spacing */
+#darrayslist td.dtdarraydisks {
+    padding-top: 0px;
+}
+
+td table.darraydiskslist tr th {
+    padding: 0.5rem 0.6rem;
+    padding-top: 2px;
+}
+
+td table.darraydiskslist tr td {
+    padding: 0.5rem 0.6rem;
+}
+
+/* lines */
+.darraydiskslist {
+    border: 1px solid rgb(71, 71, 71);
+}
+
+.tdulbottom {
+    border-bottom: 1px solid rgb(71, 71, 71);
+}
+
+.tdulbottomleftright {
+    border-bottom: 1px solid rgb(71, 71, 71);
+    border-left: 1px solid rgb(71, 71, 71);
+    border-right: 1px solid rgb(71, 71, 71);
+}
+
+.darraydiskslist tr {
+    border-bottom: 1px solid rgb(71, 71, 71);
+}
+
+.darraydiskslist thead tr:first-child {
+    background-color: rgb(48, 48, 48);
+}
