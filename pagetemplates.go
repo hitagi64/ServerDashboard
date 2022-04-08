@@ -11,10 +11,10 @@ type PageTemplates struct {
 
 func loadPageTemplates() PageTemplates {
 	var pt PageTemplates
-	pt.basehtml = template.Must(template.ParseFiles("html/base.html.tpl"))
-	pt.dashboard = template.Must(template.ParseFiles("html/dashboard.html.tpl"))
-	pt.dashboardRefreshData = template.Must(template.ParseFiles("html/dashboardRefreshData.json.tpl"))
-	pt.disks = template.Must(template.ParseFiles("html/disks.html.tpl"))
+	pt.basehtml = template.Must(template.ParseFiles("html/base.gohtml"))
+	pt.dashboard = template.Must(template.ParseFiles("html/dashboard.gohtml"))
+	pt.dashboardRefreshData = template.Must(template.ParseFiles("html/dashboardRefreshData.gohtml"))
+	pt.disks = template.Must(template.ParseFiles("html/disks.gohtml"))
 
 	return pt
 }

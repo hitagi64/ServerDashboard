@@ -4,19 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 )
 
 func (tp PageTemplates) webhandler(w http.ResponseWriter, r *http.Request){
 	// Strip ?xx=xxx&aa=etc from path
-	urlstrparts := strings.Split(r.URL.String(), "?")
-	var urlstr string
-	if (len(urlstrparts) < 1) {
-		urlstr = r.URL.String()
-	}else{
-		urlstr = urlstrparts[0]
-	}
+	urlstr := r.URL.Path
 
 	if (urlstr == "/") {
 		tp.dashboardPageHandler(w, r)
