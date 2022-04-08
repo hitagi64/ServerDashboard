@@ -8,7 +8,8 @@ import (
 type disksData struct {
 	Disks []string
 	Arrays []string
-	ArrayData []mdInfo
+	ArraysData []mdInfo
+	DisksData []diskInfo
 }
 
 func (tp PageTemplates) diskPageHandler(w http.ResponseWriter, r *http.Request){
@@ -18,11 +19,19 @@ func (tp PageTemplates) diskPageHandler(w http.ResponseWriter, r *http.Request){
 	for _, v := range data.Arrays {
 		ardata, err := mdDeviceGetInfo(v)
 		if (err == nil) {
-			data.ArrayData = append(data.ArrayData, ardata)
+			data.ArraysData = append(data.ArraysData, ardata)
 		}else{
 			fmt.Println("Error getting md info for " + v + ": " + err.Error())
 		}
 	}
-	data.ArrayData = append(data.ArrayData, makeFakeMD())
+	for _, v := range data.Disks {
+		dsdata, err := diskGetInfo(v)
+		if (err == nil) {
+			data.DisksData = append(data.DisksData, dsdata)
+		}else{
+			fmt.Println("Error getting disk info for " + v + ": " + err.Error())
+		}
+	}
+	data.ArraysData = append(data.ArraysData, makeFakeMD())
 	tp.runBasePage(w, "Disks", tp.disks, data)
 }

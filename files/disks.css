@@ -17,12 +17,6 @@
     color: white;
 }
 
-#darrayslist {
-    background-color: rgb(37, 37, 37);
-    border-radius: 15px;
-    overflow: hidden;
-}
-
 .dgreenindicator {
     color: rgb(92, 255, 42);
     font-size: 1.6em;
@@ -49,6 +43,34 @@
     text-align: right;
 }
 
+.dhscroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.ddiskslist {
+    background-color: rgb(37, 37, 37);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.ddiskslist thead tr:first-child {
+    border-bottom: 1px solid rgb(71, 71, 71);
+    background-color: rgb(48, 48, 48);
+}
+
+.ddiskslist th, .ddiskslist td {
+    padding: 1rem 1.1rem;
+}
+
+#darrayslist {
+    background-color: rgb(37, 37, 37);
+    border-radius: 15px;
+    overflow: hidden;
+    width: 100%;
+}
+
 .darrayslist thead tr:first-child {
     border-bottom: 1px solid rgb(71, 71, 71);
     background-color: rgb(48, 48, 48);
@@ -56,10 +78,6 @@
 
 .darrayslist th, .darrayslist td {
     padding: 1rem 1.1rem;
-}
-
-#darrayslist {
-    width: 100%;
 }
 
 .darraydiskslist {

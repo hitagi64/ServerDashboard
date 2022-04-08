@@ -8,8 +8,9 @@ import (
 	"strings"
 )
 
-// for info on the values these can have check out:
+// for info on the values these can have, check out:
 // https://www.kernel.org/doc/html/v4.15/admin-guide/md.html
+
 type diskInfo struct {
 	Name string // /sys/block/mdX/md/dev-'name'
 	Size int64  // /sys/block/mdX/md/dev-name/size
@@ -118,17 +119,17 @@ func mdDeviceGetInfo(mdname string) (mdinfo mdInfo, err error) {
 
 	// sync_action
 	val, err = ioutil.ReadFile(mdpath + "sync_action")
-	if (err != nil) {
-		return
-	}
 	mdinfo.Sync_action = stringStripNewline(string(val))
+	if (err != nil) {
+		mdinfo.Sync_action = ""
+	}
 
 	// uuid
 	val, err = ioutil.ReadFile(mdpath + "uuid")
-	if (err != nil) {
-		return
-	}
 	mdinfo.UUID = stringStripNewline(string(val))
+	if (err != nil) {
+		mdinfo.UUID = ""
+	}
 
 	// degraded
 	val, err = ioutil.ReadFile(mdpath + "degraded")
@@ -147,10 +148,10 @@ func mdDeviceGetInfo(mdname string) (mdinfo mdInfo, err error) {
 		return
 	}
 	valI, err = strconv.Atoi(stringStripNewline(string(val)))
-	if (err != nil) {
-		return
-	}
 	mdinfo.Raid_disks = valI
+	if (err != nil) {
+		mdinfo.Raid_disks = 0
+	}
 
 	// array_state
 	val, err = ioutil.ReadFile(mdpath + "array_state")
@@ -159,12 +160,29 @@ func mdDeviceGetInfo(mdname string) (mdinfo mdInfo, err error) {
 	}
 	mdinfo.Array_state = stringStripNewline(string(val))
 
+	// ArrayIsGood
+	mdinfo.ArrayIsGood = false
+	if (mdinfo.Array_state == "clean" || mdinfo.Array_state == "active" || mdinfo.Array_state == "active_idle"){
+		mdinfo.ArrayIsGood = true
+	}
+
+	// ArrayIsDegraded
+	mdinfo.ArrayIsDegraded = false
+	if (mdinfo.Array_state == "clear" || mdinfo.Array_state == "inactive" || mdinfo.Array_state == "readonly"){
+		mdinfo.ArrayIsDegraded = true
+	}
+	if (mdinfo.Degraded != 0) {
+		mdinfo.ArrayIsGood = false
+		mdinfo.ArrayIsDegraded = false
+		// both false means failure
+	}
+
 	// consistency_policy
 	val, err = ioutil.ReadFile(mdpath + "consistency_policy")
-	if (err != nil) {
-		return
-	}
 	mdinfo.Consistency_policy = stringStripNewline(string(val))
+	if (err != nil) {
+		mdinfo.Consistency_policy = ""
+	}
 
 	// level
 	val, err = ioutil.ReadFile(mdpath + "level")
@@ -174,6 +192,67 @@ func mdDeviceGetInfo(mdname string) (mdinfo mdInfo, err error) {
 	mdinfo.Level = stringStripNewline(string(val))
 
 	return
+}
+
+// This function reuses the diskInfo struct for md drive devices
+func diskGetInfo(name string) (disk diskInfo, err error){
+	disk.Name = name
+
+	basePath := "/sys/block/" + name + "/"
+
+	// state
+	val, err := ioutil.ReadFile(basePath + "device/" + "state")
+	if (err != nil) {
+		return disk, err
+	}
+	disk.State = stringStripNewline(string(val))
+
+	disk.StateIsGood = false
+	if (disk.State == "running") {
+		disk.StateIsGood = true
+	}
+
+	// size
+	val, err = ioutil.ReadFile(basePath + "size")
+	if (err != nil) {
+		return disk, err
+	}
+	var valI int64
+	valI, err = strconv.ParseInt(stringStripNewline(string(val)), 10, 64)
+	if (err != nil) {
+		return disk, err
+	}
+	disk.Size = valI
+
+	// SizeShortened
+	disk.SizeShortened = normalizeKBValue(disk.Size/2.0)// /2.0 because size is in 512 byte sectors
+	
+	// model
+	val, err = ioutil.ReadFile(basePath + "device/model")
+	disk.Model = stringStripNewline(string(val))
+	if (err != nil) {
+		disk.Model = "Unknown model"
+	}
+
+	// revision
+	val, err = ioutil.ReadFile(basePath + "device/rev")
+	disk.Revision = stringStripNewline(string(val))
+	if (err != nil) {
+		disk.Revision = "Unknown rev"
+	}
+
+	// serial
+	val, err = ioutil.ReadFile(basePath + "device/vpd_pg80")
+	for _, c := range stringStripNewline(string(val)) {
+		if (c >= 33 && c <= 126) {
+			disk.Serial += string(c)
+		}
+	}
+	if (err != nil || disk.Serial == "") {
+		disk.Serial = "Unknown serial"
+	}
+
+	return disk, err
 }
 
 func findStorageDevicesInSystem() (disks []string, arrays []string) {
