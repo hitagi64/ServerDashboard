@@ -44,6 +44,9 @@ func makeFakeMD() (disk mdInfo) {
 	disk.Array_state = "in_sync"
 	disk.Consistency_policy = "bitmap"
 	disk.Level = "Raid1"
+	disk.ArrayIsGood = true
+	disk.ArrayIsDegraded = false
+	disk.SizeShortened = normalizeKBValue(1024 * 1024 * 1024)
 	disk.Disks = append(disk.Disks, diskInfo{
 		Name: "sdc",
 		Model: "Samsung SSD 850 PRO",

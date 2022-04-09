@@ -26,6 +26,8 @@ type dashboardData struct {
 	CPUHasVirtualization bool
 	CPUMaxHistoryLength int
 	CPULogHistory [][]float64
+
+	ArraysData []mdInfo
 }
 
 type dashboardRefreshData struct {
@@ -40,6 +42,8 @@ type dashboardRefreshData struct {
 	CPUHighestUsage string
 	CPUMaxHistoryLength int
 	CPULogHistory [][]float64
+
+	ArraysData []mdInfo
 }
 
 func (tp PageTemplates) dashboardPageHandler(w http.ResponseWriter, r *http.Request){
@@ -68,6 +72,16 @@ func (tp PageTemplates) dashboardPageHandler(w http.ResponseWriter, r *http.Requ
 		CPUMaxHistoryLength: cl1.getCPULogMaxLength(),
 		CPULogHistory: cl1.getCPULog(),
 	}
+	_, arrays := findStorageDevicesInSystem()
+	for _, v := range arrays {
+		ardata, err := mdDeviceGetInfo(v)
+		if (err == nil) {
+			data.ArraysData = append(data.ArraysData, ardata)
+		}else{
+			fmt.Println("Error getting md info for " + v + ": " + err.Error())
+		}
+	}
+	data.ArraysData = append(data.ArraysData, makeFakeMD())
 	tp.runBasePage(w, "Dashboard", tp.dashboard, data)
 }
 
@@ -86,6 +100,22 @@ func (tp PageTemplates) dashboardRefreshPageHandler(w http.ResponseWriter, r *ht
 		CPUMaxHistoryLength: cl1.getCPULogMaxLength(),
 		CPULogHistory: cl1.getCPULog(),
 	}
+	req, ok := r.URL.Query()["req"]
+    
+    if ok && len(req[0]) > 0 {
+        if (req[0] == "md") {
+			_, arrays := findStorageDevicesInSystem()
+			for _, v := range arrays {
+				ardata, err := mdDeviceGetInfo(v)
+				if (err == nil) {
+					data.ArraysData = append(data.ArraysData, ardata)
+				}else{
+					fmt.Println("Error getting md info for " + v + ": " + err.Error())
+				}
+			}
+			data.ArraysData = append(data.ArraysData, makeFakeMD())
+		}
+    }
 	err := tp.dashboardRefreshData.Execute(w, data); 
 	if err != nil {
 		fmt.Println("2:" + err.Error())

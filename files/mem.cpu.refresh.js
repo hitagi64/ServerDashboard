@@ -1,3 +1,4 @@
+// Update as much as possible every second
 var intervalId = window.setInterval(function(){
     fetch('/dashboardRefreshData').then(function (response) {
         return response.text();
@@ -21,6 +22,8 @@ var intervalId = window.setInterval(function(){
                 cpuhistorychart.data.datasets[i].data = json.CPULogHistory[i];
             }else{
                 // Didn't test this really, but should work
+                // I doubt this would ever be used anyways
+                // Unless you somehow can add a core to your system while its running
                 console.warn("Core count in graph does not match core count in data");
                 console.warn("Updating graph to match data");
                 cpuhistorychart.data.datasets.push({

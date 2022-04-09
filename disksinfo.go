@@ -32,6 +32,8 @@ type mdInfo struct {
 	ArrayIsDegraded bool // true if array is working but one or more drives have failed
 	Degraded int // /sys/block/mdX/md/degraded
 	Raid_disks int // /sys/block/mdX/md/raid_disks
+	Size int64 // /sys/block/mdX/md/size
+	SizeShortened string
 	Array_state string // /sys/block/mdX/md/array_state
 	Consistency_policy string // /sys/block/mdX/md/consistency_policy
 	Level string // /sys/block/mdX/md/level
@@ -151,6 +153,24 @@ func mdDeviceGetInfo(mdname string) (mdinfo mdInfo, err error) {
 	mdinfo.Raid_disks = valI
 	if (err != nil) {
 		mdinfo.Raid_disks = 0
+	}
+
+	// size
+	val, err = ioutil.ReadFile(mdpath + "size")
+	if (err != nil) {
+		return
+	}
+	var valI64 int64
+	valI64, err = strconv.ParseInt(stringStripNewline(string(val)), 10, 64)
+	mdinfo.Size = valI64
+	if (err != nil) {
+		mdinfo.Size = 0
+	}
+
+	// SizeShortened
+	mdinfo.SizeShortened = normalizeKBValue(mdinfo.Size)
+	if (mdinfo.Size == 0) {
+		mdinfo.SizeShortened = "Unknown"
 	}
 
 	// array_state

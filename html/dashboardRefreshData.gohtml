@@ -9,5 +9,19 @@
     "CPUHighestUsage": "{{.CPUHighestUsage}}",
     "CPULogHistory": [
                 {{range $i, $a := .CPULogHistory}}{{if ne $i 0}} ,{{end}}[ {{range $ii, $val := $a}}{{if ne $ii 0}} ,{{end}}{{$val}}{{end}} ]
-                {{end}}]
+                {{end}}],
+    "MDInfo": [
+        {{range $i, $ar := .ArraysData}}{{if ne $i 0}} ,{{end}} {
+            "Name": "{{$ar.Name}}",
+            "Level": "{{$ar.Level}}",
+            "SizeShortened": "{{$ar.SizeShortened}}",
+            "Degraded": "{{$ar.Degraded}}",
+            "Raid_disks": "{{$ar.Raid_disks}}",
+            "Array_state": "{{$ar.Array_state}}",
+            "ArrayIsGood": {{$ar.ArrayIsGood}},
+            "ArrayIsDegraded": {{$ar.ArrayIsDegraded}},
+            "Sync_action": "{{$ar.Sync_action}}",
+            "UUID": "{{$ar.UUID}}"
+        }{{end}}
+    ]
 }

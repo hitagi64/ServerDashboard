@@ -47,3 +47,28 @@
     display: flex;
     height: 55%;
 }
+
+.dgreenindicator {
+    color: rgb(92, 255, 42);
+    vertical-align: middle;
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dredindicator {
+    color: rgb(255, 83, 40);
+    vertical-align: middle;
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dorangeindicator {
+    color: rgb(255, 159, 34);
+    vertical-align: middle;
+    font-size: 1.6em;
+    line-height: 1;
+}
+
+.dindicatorright {
+    float: right;
+}

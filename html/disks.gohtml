@@ -68,8 +68,9 @@
                     <th scope="col"><b>Name</b></th>
                     <th scope="col"><b>UUID</b></th>
                     <th scope="col"><b>Level</b></th>
-                    <th scope="col"><b>Disk count</b></th>
-                    <th scope="col"><b>Degraded discs</b></th>
+                    <th scope="col"><b>Disks</b></th>
+                    <th scope="col"><b>Degraded</b></th>
+                    <th scope="col"><b>Size</b></th>
                     <th scope="col"><b>Consistency Policy</b></th>
                     <th scope="col"><b>State</b></th>
                     <th scope="col"><b>Sync Action</b></th>
@@ -94,6 +95,7 @@
                         <td>{{$ar.Level}}</td>
                         <td>{{$ar.Raid_disks}}</td>
                         <td>{{$ar.Degraded}}</td>
+                        <td>{{$ar.SizeShortened}}</td>
                         <td>{{$ar.Consistency_policy}}</td>
                         <td>{{$ar.Array_state}}</td>
                         <td>{{$ar.Sync_action}}</td>
@@ -128,7 +130,7 @@
                     </tr>
                     <tr>
                         <td class="dtdarraydisks"></td>
-                        <td class="dtdarraydisks tdulbottomleftright" colspan="9">
+                        <td class="dtdarraydisks tdulbottomleftright" colspan="10">
                             <table class="darraydiskslist"> 
                                 <thead>
                                     <tr>

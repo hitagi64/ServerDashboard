@@ -42,14 +42,14 @@
                         <span>{{.CPUName}}</span>
                     </div>
                     <div class="dcpuflex">
-                        <div style="width: 40%; height: 100%">
+                        <div style="width: 37%; height: 100%">
                             <canvas id="cpuchart"></canvas>
                             <script>
                                 var cpuUsage = {{.CPUUsage}};
                             </script>
                             <script type="text/javascript" src="files/cpu.chart.js"></script>
                         </div>
-                        <div style="flex-grow: 2">
+                        <div style="flex-grow: 3">
                             <span class="dinfoline"><b>Cores: </b> {{.CPUCoreCount}}</span>
                             <span class="dinfoline"><b>Threads: </b> {{.CPUThreadCount}}</span>
                             <span class="dinfoline"><b>Highest usage: </b> <span id="cpuHighestUsageID">{{.CPUHighestUsage}}</span></span>
@@ -97,7 +97,43 @@
                 </div>
             </div>
         </div>
+
+        {{range $i, $ar := .ArraysData}}
+        <div class="col-xl-4 col-lg-6 col-md-12" style="padding: 0px">
+            <div class="dcard">
+                <div id="{{$ar.Name}}_title" class="dcardtitle">Raid - {{$ar.Name}}</div>
+                <div class="dcardcontent">
+                    <div style="width: 100%; height: 100%">
+                        <span class="dinfoline"><b>State: </b> <span id="{{$ar.Name}}_state">{{$ar.Array_state}}</span> <div id="{{$ar.Name}}_stateindicator" class="dindicatorright">
+                            {{if $ar.ArrayIsGood}}
+                                <i class="fa-solid fa-circle-check dgreenindicator"></i>
+                            {{else}}
+                                {{if $ar.ArrayIsDegraded}}
+                                    <i class="fa-solid fa-circle-exclamation dorangeindicator"></i>
+                                {{else}}
+                                    <i class="fa-solid fa-circle-xmark dredindicator"></i>
+                                {{end}}
+                            {{end}}
+                        </div></span>
+                        <span class="dinfoline"><b>Size: </b> <span id="{{$ar.Name}}_size">{{$ar.SizeShortened}}</span></span>
+                        <span class="dinfoline"><b>Level: </b> <span id="{{$ar.Name}}_level">{{$ar.Level}}</span></span>
+                        <span class="dinfoline"><b>Disk count: </b> <span id="{{$ar.Name}}_diskcount">{{$ar.Raid_disks}}</span></span>
+                        <span class="dinfoline"><b>Degraded disks: </b> <span id="{{$ar.Name}}_degraded">{{$ar.Degraded}}</span> <div id="{{$ar.Name}}_degradedindicator" class="dindicatorright">
+                        {{if eq $ar.Degraded 0}}
+                            <i class="fa-solid fa-circle-check dgreenindicator"></i>
+                        {{else}}
+                            <i class="fa-solid fa-circle-xmark dredindicator"></i>
+                        {{end}}
+                        </div></span>
+                        <span class="dinfoline"><b>UUID: </b> <span id="{{$ar.Name}}_uuid">{{$ar.UUID}}</span></span>
+                        <span class="dinfoline"><b>Sync Action: </b> <span id="{{$ar.Name}}_syncaction">{{$ar.Sync_action}}</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{end}}
     </div>
 </div>
 
 <script type="text/javascript" src="files/mem.cpu.refresh.js"></script>
+<script type="text/javascript" src="files/raid.refresh.js"></script>
