@@ -132,6 +132,36 @@
             </div>
         </div>
         {{end}}
+
+        {{range $i, $inf := .Interfaces}}
+        <div class="col-xl-4 col-lg-6 col-md-12" style="padding: 0px">
+            <div class="dcard">
+                <div class="dcardtitle">Network Interface - {{$inf.Name}}</div>
+                <div class="dcardcontent">
+                    <span class="dinfoline"><b>State: </b> {{$inf.Operstate}} <div id="network_upindicator" class="dindicatorright">
+                        {{if eq $inf.Operstate "up"}}
+                            <i class="fa-solid fa-circle-check dgreenindicator"></i>
+                        {{else}}
+                            <i class="fa-solid fa-circle-xmark dredindicator"></i>
+                        {{end}}
+                        </div>
+                    </span>
+                    <span class="dinfoline"><b>Max Speed: </b> {{$inf.MaxSpeedShortened}}</span>
+                    <span class="dinfoline"><b>Duplex: </b> {{$inf.Duplex}}</span>
+                    <span class="dinfoline"><b>TX speed: </b> 10 KB/s</span>
+                    <span class="dinfoline"><b>RX speed: </b> 50 KB/s</span>
+                    <span class="dinfoline"><b>IPV4: </b> {{$inf.Addr4}}</span>
+                    <span class="dinfoline"><b>IPV6: </b> {{$inf.Addr6}}</span>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
+
+    <!--- page has been updated warning --->
+    <div id="dpageupdatemessage" style="visibility: hidden;">
+        WARNING<br>
+        This page has been updated. Please refresh the page to see the latest changes.
     </div>
 </div>
 

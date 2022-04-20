@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"time"
 )
@@ -27,6 +28,11 @@ func main() {
 	cl1.maxlen = 31
 	cl1.waittime = time.Second * 1
 	go cl1.cpuLoggingTask()
+
+	aa, bb := net.Interfaces()
+	add, _ := aa[1].Addrs()
+	fmt.Println(add)
+	fmt.Println(bb)
 
 	tp := loadPageTemplates()
 

@@ -28,6 +28,8 @@ type dashboardData struct {
 	CPULogHistory [][]float64
 
 	ArraysData []mdInfo
+
+	Interfaces []interfaceInfo
 }
 
 type dashboardRefreshData struct {
@@ -81,6 +83,7 @@ func (tp PageTemplates) dashboardPageHandler(w http.ResponseWriter, r *http.Requ
 			fmt.Println("Error getting md info for " + v + ": " + err.Error())
 		}
 	}
+	data.Interfaces, _ = getNetworkInterfaceInfo()
 	data.ArraysData = append(data.ArraysData, makeFakeMD())
 	tp.runBasePage(w, "Dashboard", tp.dashboard, data)
 }

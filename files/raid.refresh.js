@@ -8,6 +8,7 @@ var intervalId = window.setInterval(function(){
             let name = json.MDInfo[i].Name;
 
             if (document.getElementById(name + "_title") == null) {
+                document.getElementById("dpageupdatemessage").style.visibility = "visible";
                 continue;
             }
 
