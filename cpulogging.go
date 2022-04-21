@@ -37,8 +37,8 @@ func (cl *CPULog) cpuLoggingTask() {
 			cl.log[i] = append(cl.log[i], cpuusage[i])
 		}
 		if (len(cl.log) > 0) {
-			if (len(cl.log[0])) > cl.maxlen {
-				for i := 0; i < len(cl.log); i++ {
+			for i := 0; i < len(cl.log); i++ {
+				if (len(cl.log[i])) > cl.maxlen {
 					cl.log[i] = cl.log[i][len(cl.log[i])-cl.maxlen:]
 				}
 			}

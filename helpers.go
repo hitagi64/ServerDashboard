@@ -35,6 +35,19 @@ func normalizeKBValue(val int64) (out string) {
 	return
 }
 
+func normalizeBValue(val uint64) (out string) {
+	if (val < 1024) {
+		out = fmt.Sprintf("%d B", val)
+	} else if (val < 1024 * 1024) {
+		out = fmt.Sprintf("%.2f KB", float64(val) / 1024.0)
+	} else if (val < 1024 * 1024 * 1024) {
+		out = fmt.Sprintf("%.2f MB", float64(val) / 1024.0 / 1024.0)
+	} else {
+		out = fmt.Sprintf("%.2f GB", float64(val) / 1024.0 / 1024.0 / 1024.0)
+	}
+	return
+}
+
 func makeFakeMD() (disk mdInfo) {
 	disk.Name = "md0"
 	disk.Sync_action = "none"

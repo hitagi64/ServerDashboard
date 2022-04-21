@@ -1,0 +1,9 @@
+.dpagesubcontainer {
+    margin: 6px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgb(28, 28, 28);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+}

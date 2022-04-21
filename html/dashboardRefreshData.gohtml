@@ -23,5 +23,16 @@
             "Sync_action": "{{$ar.Sync_action}}",
             "UUID": "{{$ar.UUID}}"
         }{{end}}
+    ],
+    "Interfaces": [
+        {{range $i, $if := .Interfaces}}{{if ne $i 0}} ,{{end}} {
+            "Name": "{{$if.Name}}",
+            "Addr4": "{{$if.Addr4}}",
+            "Addr6": "{{$if.Addr6}}",
+            "Operstate": "{{$if.Operstate}}",
+            "TXSpeedShortened": "{{$if.TXSpeedShortened}}",
+            "RXSpeedShortened": "{{$if.RXSpeedShortened}}",
+            "MaxSpeedShortened": "{{$if.MaxSpeedShortened}}"
+        }{{end}}
     ]
 }

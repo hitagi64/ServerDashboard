@@ -5,6 +5,7 @@ var intervalId = window.setInterval(function(){
     }).then(function (text) {
         return JSON.parse(text);
     }).then(function (json) {
+        // Update mem and cpu charts and some system info
         document.getElementById("cpuHighestUsageID").innerHTML = json.CPUHighestUsage;
 
         document.getElementById("systemUptimeID").innerHTML = json.SystemUptime;
@@ -38,6 +39,30 @@ var intervalId = window.setInterval(function(){
         memchart.update();
         cpuchart.update();
         cpuhistorychart.update();
+
+        // Update networking info
+        for (let i = 0; i < json.Interfaces.length; i++) {
+            let name = json.Interfaces[i].Name;
+
+            if (document.getElementById(name + "nwi_title") == null) {
+                continue;
+            }
+
+            document.getElementById(name + "nwi_state").innerHTML = json.Interfaces[i].Operstate;
+            document.getElementById(name + "_maxspeed").innerHTML = json.Interfaces[i].MaxSpeedShortened;
+            document.getElementById(name + "_tx").innerHTML = json.Interfaces[i].TXSpeedShortened;
+            document.getElementById(name + "_rx").innerHTML = json.Interfaces[i].RXSpeedShortened;
+            document.getElementById(name + "_ipv4").innerHTML = json.Interfaces[i].Addr4;
+            document.getElementById(name + "_ipv6").innerHTML = json.Interfaces[i].Addr6;
+
+            if (json.Interfaces[i].Operstate == "unknown") {
+                document.getElementById(name + "_network_upindicator").innerHTML = "<i class=\"fa-solid fa-circle-exclamation dorangeindicator\"></i>";
+            }else if (json.Interfaces[i].Operstate == "up") {
+                document.getElementById(name + "_network_upindicator").innerHTML = "<i class=\"fa-solid fa-circle-check dgreenindicator\"></i>";
+            }else {
+                document.getElementById(name + "_network_upindicator").innerHTML = "<i class=\"fa-solid fa-circle-xmark dredindicator\"></i>";
+            }
+        }
     }).catch(function (err) {
         console.warn('Something went wrong.', err);
     });

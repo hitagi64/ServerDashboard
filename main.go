@@ -18,6 +18,8 @@ func (tp PageTemplates) webhandler(w http.ResponseWriter, r *http.Request){
 		tp.dashboardRefreshPageHandler(w, r)
 	}else if (urlstr == "/disks") {
 		tp.diskPageHandler(w, r)
+	}else if (urlstr == "/docker") {
+		tp.dockerPageHandler(w, r)
 	}else{
 		fmt.Fprintf(w, "404: %s", urlstr)
 	}
@@ -28,6 +30,11 @@ func main() {
 	cl1.maxlen = 31
 	cl1.waittime = time.Second * 1
 	go cl1.cpuLoggingTask()
+
+	// Logs network up and down
+	nwl1.maxlen = 31
+	nwl1.waittime = time.Second * 1 // Has to be 1s for the results to be accurate
+	go nwl1.networkLoggingTask()
 
 	aa, bb := net.Interfaces()
 	add, _ := aa[1].Addrs()

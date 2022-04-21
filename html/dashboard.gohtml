@@ -136,9 +136,9 @@
         {{range $i, $inf := .Interfaces}}
         <div class="col-xl-4 col-lg-6 col-md-12" style="padding: 0px">
             <div class="dcard">
-                <div class="dcardtitle">Network Interface - {{$inf.Name}}</div>
+                <div id="{{$inf.Name}}nwi_title" class="dcardtitle">Network Interface - {{$inf.Name}}</div>
                 <div class="dcardcontent">
-                    <span class="dinfoline"><b>State: </b> {{$inf.Operstate}} <div id="network_upindicator" class="dindicatorright">
+                    <span class="dinfoline"><b>State: </b> <span id="{{$inf.Name}}nwi_state">{{$inf.Operstate}}</span> <div id="{{$inf.Name}}_network_upindicator" class="dindicatorright">
                         {{if eq $inf.Operstate "up"}}
                             <i class="fa-solid fa-circle-check dgreenindicator"></i>
                         {{else}}
@@ -146,12 +146,12 @@
                         {{end}}
                         </div>
                     </span>
-                    <span class="dinfoline"><b>Max Speed: </b> {{$inf.MaxSpeedShortened}}</span>
+                    <span class="dinfoline"><b>Max Speed: </b> <span id="{{$inf.Name}}_maxspeed">{{$inf.MaxSpeedShortened}}</span></span>
                     <span class="dinfoline"><b>Duplex: </b> {{$inf.Duplex}}</span>
-                    <span class="dinfoline"><b>TX speed: </b> 10 KB/s</span>
-                    <span class="dinfoline"><b>RX speed: </b> 50 KB/s</span>
-                    <span class="dinfoline"><b>IPV4: </b> {{$inf.Addr4}}</span>
-                    <span class="dinfoline"><b>IPV6: </b> {{$inf.Addr6}}</span>
+                    <span class="dinfoline"><b>TX speed: </b> <span id="{{$inf.Name}}_tx">{{$inf.TXSpeedShortened}}</span></span>
+                    <span class="dinfoline"><b>RX speed: </b> <span id="{{$inf.Name}}_rx">{{$inf.RXSpeedShortened}}</span></span>
+                    <span class="dinfoline"><b>IPV4: </b> <span id="{{$inf.Name}}_ipv4">{{$inf.Addr4}}</span></span>
+                    <span class="dinfoline"><b>IPV6: </b> <span id="{{$inf.Name}}_ipv6">{{$inf.Addr6}}</span></span>
                 </div>
             </div>
         </div>

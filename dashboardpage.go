@@ -46,6 +46,8 @@ type dashboardRefreshData struct {
 	CPULogHistory [][]float64
 
 	ArraysData []mdInfo
+
+	Interfaces []interfaceInfo
 }
 
 func (tp PageTemplates) dashboardPageHandler(w http.ResponseWriter, r *http.Request){
@@ -119,6 +121,7 @@ func (tp PageTemplates) dashboardRefreshPageHandler(w http.ResponseWriter, r *ht
 			data.ArraysData = append(data.ArraysData, makeFakeMD())
 		}
     }
+	data.Interfaces, _ = getNetworkInterfaceInfo()
 	err := tp.dashboardRefreshData.Execute(w, data); 
 	if err != nil {
 		fmt.Println("2:" + err.Error())

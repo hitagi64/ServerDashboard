@@ -1,8 +1,12 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"net"
+	"strconv"
+	"sync"
+	"time"
 )
 
 type interfaceInfo struct {
@@ -69,10 +73,9 @@ func getNetworkInterfaceInfo() (interfaces []interfaceInfo, err error) {
 			iface.Operstate = "Unknown"
 		}
 
-		iface.TXSpeed = 0
-		iface.RXSpeed = 0
-		iface.TXSpeedShortened = "1G"
-		iface.RXSpeedShortened = "1G"
+		iface.TXSpeed, iface.RXSpeed = nwl1.getNetworkRateForInf(inf.Name)
+		iface.TXSpeedShortened = normalizeBValue(iface.TXSpeed) + "/s"
+		iface.RXSpeedShortened = normalizeBValue(iface.RXSpeed) + "/s"
 		
 		val, err = ioutil.ReadFile(infpath + "speed")
 		iface.MaxSpeedShortened = stringStripNewline(string(val)) + " Mbit"
@@ -84,4 +87,122 @@ func getNetworkInterfaceInfo() (interfaces []interfaceInfo, err error) {
 	}
 
 	return
+}
+
+func getTotalUpAndDownForInterfaceName(name string) (up uint64, down uint64, err error) {
+	up = 0
+	down = 0
+
+	infpath := "/sys/class/net/" + name + "/"
+	var val []byte
+
+	val, err = ioutil.ReadFile(infpath + "statistics/tx_bytes")
+	if (err != nil) {
+		return up, down, errors.New("can't read tx bytes")
+	}
+	up, err = strconv.ParseUint(stringStripNewline(string(val)), 10, 64)
+	if (err != nil) {
+		return up, down, errors.New("can't convert tx bytes to a number")
+	}
+
+	val, err = ioutil.ReadFile(infpath + "statistics/rx_bytes")
+	if (err != nil) {
+		return up, down, errors.New("can't read rx bytes")
+	}
+	down, err = strconv.ParseUint(stringStripNewline(string(val)), 10, 64)
+	if (err != nil) {
+		return up, down, errors.New("can't convert rx bytes to a number")
+	}
+
+	return
+}
+
+type networkingLog struct {
+	mu sync.Mutex
+	maxlen int
+	waittime time.Duration
+	// History of up and down rate per interface
+	up map[string][]uint64
+	down map[string][]uint64
+
+	// Last up or down value per interface
+	uplast map[string]uint64
+	downlast map[string]uint64
+}
+var nwl1 networkingLog
+
+func (nwl *networkingLog) getNetworkLog() (up map[string][]uint64, down map[string][]uint64) {
+	nwl.mu.Lock()
+	defer nwl.mu.Unlock()
+	return nwl.up, nwl.down
+}
+
+func (nwl *networkingLog) getNetworkRateForInf(inf string) (up uint64, down uint64) {
+	nwl.mu.Lock()
+	up = 0
+	down = 0
+	if val, ok := nwl.up[inf]; ok {
+		if (len(val) > 0) {
+			up = val[len(val)-1]
+		}
+	}
+	if val, ok := nwl.down[inf]; ok {
+		if (len(val) > 0) {
+			down = val[len(val)-1]
+		}
+	}
+	nwl.mu.Unlock()
+	return
+}
+
+func (nwl *networkingLog) getNetworkLogMaxLength() (max int) {
+	return nwl.maxlen
+}
+
+func (nwl *networkingLog) networkLoggingTask() {
+	nwl.up = make(map[string][]uint64)
+	nwl.down = make(map[string][]uint64)
+	nwl.uplast = make(map[string]uint64)
+	nwl.downlast = make(map[string]uint64)
+	infs, _ := net.Interfaces()
+	for _, inf := range infs {
+		up, down, _ := getTotalUpAndDownForInterfaceName(inf.Name)
+		nwl.uplast[inf.Name] = up
+		nwl.downlast[inf.Name] = down
+	}
+	for {
+		infs, err := net.Interfaces()
+		if err != nil {
+			continue
+		}
+		for _, inf := range infs {
+			up, down, err := getTotalUpAndDownForInterfaceName(inf.Name)
+			if (err == nil){
+				nwl.mu.Lock()
+
+				nwl.up[inf.Name] = append(nwl.up[inf.Name], up - nwl.uplast[inf.Name])
+				if (len(nwl.up[inf.Name]) > 0) {
+					for l := range nwl.up {
+						if (len(nwl.up[l]) > nwl.maxlen) {
+							nwl.up[l] = nwl.up[l][1:]
+						}
+					}
+				}
+
+				nwl.down[inf.Name] = append(nwl.down[inf.Name], down - nwl.downlast[inf.Name])
+				if (len(nwl.down[inf.Name]) > 0) {
+					for l := range nwl.down {
+						if (len(nwl.down[l]) > nwl.maxlen) {
+							nwl.down[l] = nwl.down[l][1:]
+						}
+					}
+				}
+
+				nwl.mu.Unlock()
+			}
+			nwl.uplast[inf.Name] = up
+			nwl.downlast[inf.Name] = down
+		}
+		time.Sleep(nwl.waittime)
+	}
 }
